@@ -27,10 +27,11 @@ pipeline{
     }
     stage("DOCKER BUILD & PUSH"){
         steps{
-            withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
-                sh 'docker build -t bmi-calculator .'
-                sh 'docker tag bmi-calculator yatingambhir/bmi-calculator:latest'
-                sh 'docker push yatingambhir/bmi-calculator:latest'
+            script{
+                withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
+                    sh 'docker build -t bmi-calculator .'
+                    sh 'docker tag bmi-calculator yatingambhir/bmi-calculator:latest'
+                    sh 'docker push yatingambhir/bmi-calculator:latest'            
             }
         }
     }
