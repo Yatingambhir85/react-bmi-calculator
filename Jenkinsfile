@@ -35,14 +35,15 @@ pipeline{
             }
         }
     }
+    }
     stage("Deployment on Docker"){
         steps{
             sh 'docker stop bmi-calculator:latest && docker rm bmi-calculator:latest || true'
             sh 'docker run -itd --name bmi-calc-cicd -p 3000:3000 bmi-calculator:latest'
         }
     }
-  }
+    }
 }
-}
+      
   
     
