@@ -9,7 +9,9 @@ pipeline{
   }
   stages{
     stage("Clean Workspace"){
-      cleanWs()
+        steps{
+            cleanWs()
+        }
     }
     stage("Git checkout"){
       steps{
