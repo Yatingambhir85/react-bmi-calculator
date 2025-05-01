@@ -5,8 +5,14 @@ AUTHOR: YATIN GAMBHIR
 TASK: DEPLOY A REACT APPLICATION
 TASK
 
+RED="\033[31m"
+GREEN="\033[32m"
+BLUE="\033[34m"
+BOLD="\033[1m"
+RESET="\033[0m"
+
 code_clone(){
-	echo "Cloning the code"
+	echo -e "${BOLD}${GREEN}Cloning the code${RESET}\n"
 	git clone https://github.com/Yatingambhir85/react-bmi-calculator.git
 }
 
@@ -17,7 +23,7 @@ install_requirements(){
 
 required_restarts(){
 	sudo systemctl enable docker
-	sudo systemctl enable nginx
+	sudo systemctl enable nginx &> /dev/null
 	sudo usermod -aG docker $USER
 	sudo systemctl restart docker
 }
@@ -34,17 +40,25 @@ deploy(){
 
 	fi
 }
-echo -e "---------------------------------\n DEPLOYMENT STARTED \n-------------------------------"
-if ! code_clone; then
-	echo "the code directory already exists"
+cleaning_up(){
+	cd ..
+	sudo rm -rf react-bmi-calculator
+}
+echo -e "${RED}---------------------------------\n DEPLOYMENT STARTED \n-------------------------------${RESET}"
+if [[ ! -d "react-bmi-calculator/.git" ]]; then
+	code_clone
 	cd react-bmi-calculator
+else
+	echo "Directory already present. Skipping Cloning"
 fi
-if ! install_requirements; then
-	echo "requirements already installed"
-	exit 1
+if ! command -v docker &> /dev/null || ! command -v nginx &> /dev/null; then
+	install_requirements
+else
+	echo "Docker & Nginx are already installed"
 fi
 if ! required_restarts; then
 	echo "services are up and running no need to restart"
 fi
 deploy
-echo -e "-------------------------------------\n DEPLOYMENT COMPLETED \n----------------------"
+cleaning_up
+echo -e "${RED}-------------------------------------\n DEPLOYMENT COMPLETED \n----------------------${RESET}"
